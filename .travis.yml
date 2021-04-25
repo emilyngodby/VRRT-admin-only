@@ -18,3 +18,5 @@ deploy:
     app: va-vrrt-admin
     on:
         repo: emilyngodby/VRRT-admin-only
+    run:
+        - python manage.py runserver
