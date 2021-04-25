@@ -1,0 +1,78 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+    <head>
+        <link href="http://cdn.pydata.org/bokeh/release/bokeh-2.3.0.min.css" rel="stylesheet" type="text/css">
+        <link href="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.0.min.css" rel="stylesheet" type="text/css">
+        <script src="http://cdn.pydata.org/bokeh/release/bokeh-2.3.0.min.js"></script>
+        <script src="http://cdn.pydata.org/bokeh/release/bokeh-widgets-2.3.0.min.js"></script>
+        {{ script | safe }}
+    </head>        
+
+    <div id="data_preview">
+        {% if bloodPressure %}
+
+
+            <h1>Data Preview:</h1>
+        
+
+            <div class="data_stats">
+                <h3>Change in Blood Pressure</h3>
+
+                        {{ div | safe}}
+
+
+                <div class="data_item">
+                    <h3>Average Change of systolic Pressure</h3>
+                    <h4>{{ systolicStartAvgChange }}</h4>
+                </div>
+                <div class="data_item">
+                    <h3>Average Change of diastolic Pressure</h3>
+                    <h4>{{ diastolicStartAvgChange }}</h4>
+                </div>
+            </div>
+
+        {% else %}
+
+        <div class="prev_header">
+            <h1>Data Preview:</h1>
+        </div>
+
+            <div class="data_stats" >
+                <div class="data_item" style="padding: 20px 20px;">
+                        {{ div | safe}}
+                        <div class="preview_analysis">
+                        </div>
+                </div>
+                <div class="data_item">
+                    <h3>Average Change</h3>
+                    <h4>{{ averageChange}}</h4>
+                </div>
+                <div class="data_item">
+                    <h3>Max Positive Change</h3>
+                    <h4>{{ maxPostiveChange }}</h4>
+                </div>
+                <div class="data_item">
+                    <h3>Min Change</h3>
+                    <h4>{{ minChange }}</h4>
+                </div>
+
+                {% if significantChanges %}
+                <div class="data_item">
+                    <h3>Number of painscore decreases by 2 or more</h3>
+                    <h4>{{ significantChanges }}</h4>
+                </div>
+                {% endif %}
+            </div>
+                
+            {% endif %}
+
+        <div class="progress_footer">
+            <ul class="nav">
+                <input type="button" value="Add new data" onclick="location.href = `{% url 'Survey_Instance_Create' %}`"/>
+                <input type="button" value="Back to Progress View" onclick="location.href=`adminProgressPage`"/>
+            </ul>
+        </div>
+    </div>
+{% endblock %}

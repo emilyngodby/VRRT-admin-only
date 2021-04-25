@@ -1,0 +1,25 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+    <div id="admin">
+        <div class="headspace">
+        </div>
+        <div class="a_header">
+            <h1>Welcome, {{ user.get_username }}</h1>
+            <h3>Choose your task:</h3>
+        </div>
+        <div class="a_buttons">
+            <ul class="nav">
+                <li><input type="button" value="Create New Account" onclick="location.href=`accountCreationSelection`" /></li>
+                <li><input type="button" value="Input Data" onclick="location.href=`SurveyInstance/create`" /></li>
+                <li><input type="button" value="Review Progress" onclick="location.href=`adminProgressPage`" /></li>
+                <!-- <li><a href="SurveyInstance/create">Input data</a></li>
+                <li><a href="adminProgressPage">Review Progress</a></li> -->
+            </ul>
+        </div>
+        <div class="a_footer">
+            <input type="button" value="Logout" onclick="location.href=`{% url 'logout'%}`" />
+            <!-- <a class="logout" href="{% url 'logout'%}">LogOut</a> -->
+        </div>
+    </div>
+{% endblock %}
