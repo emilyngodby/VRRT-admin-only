@@ -27,7 +27,7 @@ SECRET_KEY = '0j%i%vbqs8e&f=cg3fnl80w*t0)^+_&vl10ohn1nh=i&5yuw$$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['va-vrrt-admin.herokuapp.com']
 
 LOGIN_URL = 'login'
 
