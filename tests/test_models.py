@@ -6,13 +6,16 @@ from VRRTController.models import SiteID
 
 # Create your tests here.
 
-# Survey Model Tests - 100% coverage
+# Tests for Survey Model - 100% coverage
+# There is no reason to test that the survey name stored is correct, django handles that for you
 class SurveyTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # create a survey
         Survey.objects.create(SurveyName='VRRTSurvey')
         pass
     def test_survey_name_label(self):
+        # CHECK THERE IS A LABEL CALLED SURVEYNAME
         # Get a survey object to test
         survey = Survey.objects.get(id=1)
 
@@ -22,6 +25,7 @@ class SurveyTestClass(TestCase):
         # Compare the value to the expected result
         self.assertEqual(field_label, 'SurveyName')
     def test_survey_name_max_length(self):
+        # CHECK THE SURVEY NAME LENGTH
         # Get a survey object to test
         survey = Survey.objects.get(id=1)
 
@@ -35,6 +39,7 @@ class SurveyTestClass(TestCase):
 class SiteIDTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # create a site
         SiteID.objects.create(SiteName='Reno', SiteAddress='123 Apple St', SiteState='NV', SiteCity='Reno', SiteZipCode='89503', SiteTelephone='775-555-5555')
         pass
     # Validating the field labels are as expected
@@ -92,6 +97,7 @@ class SiteIDTestClass(TestCase):
 class SurveyInstanceTestClass(TestCase):
     @classmethod
     def setUpTestData(cls):
+        # Create a survey instance
         SurveyInstance.objects.create(survey=Survey.objects.create(SurveyName='VRRTSurvey'),id= 'f2838392-2966-4b45-a13f-f46125c961f6', PatientID='VA_01_01', PainScoreStart=9, PainScoreEnd=8, HeartRateStart=75, HeartRateEnd=65, BPStartValue1=140, BPStartValue2=138, BPEndValue1=70, BPEndValue2=68, O2SaturationStart=98, O2SaturationEnd=99, RespirationRateStart=14, RespirationRateEnd=13, RestlessnessStart=True, RestlessnessEnd=True, DepressionStart=True, DepressionEnd=True, NauseaStart=False, NauseaEnd=True, AnxietyStart=True, AnxietyEnd=False, VisiblePainStart=True, VisiblePainEnd=False, TremorsStart=False, TremorsEnd=False, DelusionsStart=False, DelusionsEnd=False, TherapyDuration=30)
         pass
     # Label validation
