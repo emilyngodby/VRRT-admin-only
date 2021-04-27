@@ -1,4 +1,4 @@
-# VRRT [![Build Status](https://travis-ci.com/emilyngodby/VRRT.svg?branch=master)](https://travis-ci.com/emilyngodby/VRRT)
+# VRRT [![Build Status](https://travis-ci.com/emilyngodby/VRRT-admin-only.svg?branch=master)](https://travis-ci.com/emilyngodby/VRRT-admin-only)
 Virtual Reality Research Tool for the VA in Reno, NV.
 ## To install Rasa
 Install Rasa (preferably in a venv) and dependencies
