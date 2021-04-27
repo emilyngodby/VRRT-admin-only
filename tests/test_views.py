@@ -13,24 +13,43 @@ from VRRTController.models import SiteID
 # 100% Code coverage for views.py and urls.py -- integration tests
 # Log in Pass/Fail Conditions for both user types
 
+# Integration Testing = model + url + login authentification
+
+# Checking patient can log in and sent to the right view.
 class PatientLandingPageViewTest(TestCase):
     def setUp(self):
+        # create client object
         self.client = Client()
+        # create user
         self.user = User.objects.create_user(username='testuser', password='12345')
+        # create group
         self.group = Group(name='Patient')
         self.group.save()    
     def test_user_with_no_group_redirected_to_login(self):
+        # check if user is not assigned the group type 'Patient' they cannot log in
         self.client.login(username='testuser', password='12345')
         response = self.client.get(reverse('login'))
         print(Group.objects.all())
         self.assertEqual(response.status_code, 200)
     def test_user_sent_to_patient_landing_page(self):
+        # checking if a user of group type 'Patient' can log in
+
+        # assign group
         self.user.groups.add(self.group)
+
+        # save user settings
         self.user.save()
+
+        # user log in
         self.client.login(username='testuser', password='12345')
+
+        # if user clicks link/button connected to corresponding page 
         response = self.client.get(reverse('patientLandingPage')) 
+        
+        # check if success status code
         self.assertEqual(response.status_code, 200)
 
+# Checking the admin can log in and sent to the right view
 class AdminLandingPageViewTest(TestCase):
     def setUp(self):
         self.client = Client()
@@ -38,11 +57,13 @@ class AdminLandingPageViewTest(TestCase):
         self.group = Group(name='Staff')
         self.group.save()    
     def test_admin_with_no_group_assigned_redirected_to_login(self):
+        # check if user is not assigned the group type 'Staff' they cannot log in
         self.client.login(username='testuser', password='12345')
         response = self.client.get(reverse('login'))
         print(Group.objects.all())
         self.assertEqual(response.status_code, 200)
     def test_admin_sent_to_admin_landing_page(self):
+        # checking if a user of group type 'Staff' can log in
         self.user.groups.add(self.group)
         self.user.save()
         self.client.login(username='testuser', password='12345')
@@ -58,11 +79,13 @@ class PatientProgressPageViewTest(TestCase):
         self.group = Group(name='Patient')
         self.group.save() 
     def test_user_with_no_group_redirected_to_login(self):
+        # checking user authentification
         self.client.login(username='testuser', password='12345')
         response = self.client.get(reverse('login'))
         print(Group.objects.all())
         self.assertEqual(response.status_code, 200)   
     def test_patient_sent_to_patient_progress_page(self):
+        # checking user can navigate to the patient progress page
         self.user.groups.add(self.group)
         self.user.save()
         self.client.login(username='testuser', password='12345')
@@ -328,39 +351,53 @@ class ExportViewTest(TestCase):
 class PatientProgressPainScorePreviewTest(TestCase):
     def setUp(self):
         self.client = Client()
+
+        # create a user
         self.user = User.objects.create_user(username='testuser', password='12345')
 
-        # create a second user to ensure it only returns survey instances pertaining to target user
+        # create a second user with diff username to ensure it only returns survey instances pertaining to target user
         self.user2 = User.objects.create_user(username='test2', password='12345')
 
+        # create group
         self.group = Group(name='Patient')
         self.group.save()   
 
+        # create survey instance for 'testuser' patient
         SurveyInstance.objects.create(survey=Survey.objects.create(SurveyName='VRRTSurvey'),id= 'f2838392-2966-4b45-a13f-f46125c961f6', PatientID='testuser', PainScoreStart=9, PainScoreEnd=8, HeartRateStart=75, HeartRateEnd=65, BPStartValue1=140, BPStartValue2=138, BPEndValue1=70, BPEndValue2=68, O2SaturationStart=98, O2SaturationEnd=99, RespirationRateStart=14, RespirationRateEnd=13, RestlessnessStart=True, RestlessnessEnd=True, DepressionStart=True, DepressionEnd=True, NauseaStart=False, NauseaEnd=True, AnxietyStart=True, AnxietyEnd=False, VisiblePainStart=True, VisiblePainEnd=False, TremorsStart=False, TremorsEnd=False, DelusionsStart=False, DelusionsEnd=False, TherapyDuration=30)
 
+        # create survey instance for 'test2' patient
         SurveyInstance.objects.create(survey=Survey.objects.create(SurveyName='VRRTSurvey'),id= 'f2838392-2966-4b45-a13f-f46125c961f7', PatientID='test2', PainScoreStart=10, PainScoreEnd=9, HeartRateStart=76, HeartRateEnd=66, BPStartValue1=141, BPStartValue2=139, BPEndValue1=71, BPEndValue2=69, O2SaturationStart=99, O2SaturationEnd=98, RespirationRateStart=15, RespirationRateEnd=14, RestlessnessStart=True, RestlessnessEnd=True, DepressionStart=True, DepressionEnd=True, NauseaStart=False, NauseaEnd=True, AnxietyStart=True, AnxietyEnd=False, VisiblePainStart=True, VisiblePainEnd=False, TremorsStart=False, TremorsEnd=False, DelusionsStart=False, DelusionsEnd=False, TherapyDuration=31)
     def test_pain_score_inquiry(self):
+        # assign both users to patient group
         self.user.groups.add(self.group)
         self.user2.groups.add(self.group)
+
+        # select field type
         self.field = 'painScore'
+
+        # save user settings
         self.user2.save()
         self.user.save()
+
+        # have 'testuser' login
         self.client.login(username='testuser', password='12345')
         response = self.client.get(reverse('patientProgressPagePainScore')) 
         
         # Check if returning the right view
         self.assertEqual(response.status_code, 200)
 
+        # get all the pain score start values for 'testuser'
         self.start = SurveyInstance.objects.values_list('PainScoreStart').filter(PatientID = 'testuser')
         self.start = list(self.start)
 
-        # Check if values are correct for start
+        # Check if values match what is stored in the database
         self.assertEqual(self.start[0], (9,))
 
+        # get all the pain score end values for 'testuser'
         self.end = SurveyInstance.objects.values_list('PainScoreEnd').filter(PatientID = 'testuser')
         self.end = list(self.end)
 
-        # Check if values are correct for end
+        # Check if values match what is stored in the database
         self.assertEqual(self.end[0], (8,))
     def test_heart_rate_inquiry(self):
         self.user.groups.add(self.group)
